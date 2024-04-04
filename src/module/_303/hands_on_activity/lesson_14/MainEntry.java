@@ -3,27 +3,22 @@ package module._303.hands_on_activity.lesson_14;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public abstract class MainEntry {
     public static Calc<Integer> add = new Calc<>() {
         @Override
         public Integer compute(Integer[] values) {
-            var numbers = List.of(values);
-            return numbers.stream().reduce(Integer::sum).orElse(0);
+            return Stream.of(values).reduce(Integer::sum).orElse(0);
         }
     };
-    public static Calc<Integer> subtract = values -> {
-        var numbers = List.of(values);
-        return numbers.stream().reduce((a, b) -> a - b).orElse(0);
-    };
-    public static Supplier<Calc<Integer>> multiply = () -> values -> {
-        var numbers = List.of(values);
-        return numbers.stream().reduce((a, b) -> a * b).orElse(0);
-    };
+
+    public static Calc<Integer> subtract = values -> Stream.of(values).reduce((a, b) -> a - b).orElse(0);
+
+    public static Supplier<Calc<Integer>> multiply = () -> values -> Stream.of(values).reduce((a, b) -> a * b).orElse(0);
 
     public static Calc<Double> divide = values -> {
         try {
@@ -33,18 +28,17 @@ public abstract class MainEntry {
         }
     };
 
-    private static double calculateDivision(Double[] values) throws Exception {
-        var numbers = List.of(values);
-        if (numbers.size() < 2) {
+    private static Double calculateDivision(Double[] values) throws Exception {
+        if (values.length < 2) {
             throw new Exception("Division requires at least two numbers.");
         }
-        if (numbers.size() > 2) {
+        if (values.length > 2) {
             throw new Exception("Division requires only two numbers.");
         }
-        if (numbers.get(1) == 0) {
+        if (values[1] == 0) {
             throw new Exception("Cannot divide by zero.");
         }
-        return numbers.stream().reduce((a, b) -> a / b).orElse(0.0);
+        return Stream.of(values).reduce((a, b) -> a / b).orElse(0.0);
     }
 
     private static List<Integer> getNumbers(Scanner scanner) {
@@ -52,8 +46,9 @@ public abstract class MainEntry {
         boolean isDone = false;
         do {
             System.out.println("Enter a list of numbers to perform an operation. Type 'done' to finish.");
-            String[] input = scanner.nextLine().split(" ");
-            input = Arrays.stream(input).filter(value -> !value.isBlank()).toArray(String[]::new);
+            var input = scanner.nextLine().split(" ");
+            input = Stream.of(input).filter(value -> !value.isBlank()).toArray(String[]::new);
+
             try {
                 for (String value : input) {
                     if (value.equalsIgnoreCase("done")) {
@@ -63,9 +58,9 @@ public abstract class MainEntry {
                     values.add(Integer.parseInt(value));
                 }
             } catch (NumberFormatException e) {
-                System.out.println(STR."Invalid input. \{e.getMessage()}. Try again.");
-                System.out.println(STR."Current values: \{values}");
-                continue;
+                System.out.println(STR."""
+                Invalid input. \{e.getMessage()}. Try again.
+                Current values: \{values}""");
             }
         } while (!isDone);
         return values;
@@ -85,16 +80,13 @@ public abstract class MainEntry {
                 operation = ArithmeticOperation.valueOf(scanner.nextInt());
                 if (operation == null) {
                     System.out.println("Invalid operation. Try again.");
-                    scanner.nextLine();
-                    continue;
                 } else {
                     isDone = true;
-                    scanner.nextLine();
                 }
+                scanner.nextLine();
             } catch (Exception e) {
                 System.out.println("Invalid operation. Try again.");
                 scanner.nextLine();
-                continue;
             }
         } while (!isDone);
         return operation;
@@ -116,7 +108,6 @@ public abstract class MainEntry {
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-                continue;
             }
         } while (true);
     }
@@ -130,7 +121,6 @@ public abstract class MainEntry {
                 isDone = isDone(scanner);
             } catch (Exception e) {
                 System.out.println(STR."An error occurred. \{e.getMessage()}");
-                continue;
             }
         } while (!isDone);
         scanner.close();
@@ -157,7 +147,7 @@ public abstract class MainEntry {
 
                 case DIVIDE -> {
                     List<Double> doubleValues = new ArrayList<>();
-                    values.stream().map(Integer::doubleValue).forEach(doubleValues::add);
+                    values.forEach(value -> doubleValues.add(value.doubleValue()));
                     System.out.println(STR."""
                 Numbers to divide: \{values}
                 Result: \{divide.compute(doubleValues.toArray(new Double[0]))}""");
