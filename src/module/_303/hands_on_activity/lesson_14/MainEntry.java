@@ -1,10 +1,15 @@
 package module._303.hands_on_activity.lesson_14;
 
-import java.util.*;
+import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 public abstract class MainEntry {
-    public static Calc add = new Calc<Integer>() {
+    public static Calc<Integer> add = new Calc<>() {
         @Override
         public Integer compute(Integer[] values) {
             var numbers = List.of(values);
