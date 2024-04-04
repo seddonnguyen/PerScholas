@@ -165,9 +165,7 @@ public abstract class MainEntry {
         private static final Map<Integer, ArithmeticOperation> BY_VALUE = new HashMap<>();
 
         static {
-            for (ArithmeticOperation operation : values()) {
-                BY_VALUE.put(operation.value, operation);
-            }
+            Stream.of(values()).forEach(operation -> BY_VALUE.put(operation.value, operation));
         }
 
         private final int value;
