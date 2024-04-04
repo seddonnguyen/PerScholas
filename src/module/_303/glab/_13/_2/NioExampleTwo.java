@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static java.nio.file.StandardOpenOption.*;
 
@@ -11,7 +12,8 @@ public class NioExampleTwo {
     public static void main(String[] args) throws IOException {
         String[] inputFiles = {"file1.txt", "file2.txt"};
         String outputFile = "OutputExampleTwo.txt";
-        Path resourcePath = Path.of("src","module","_303", "GLAB", "_13", "_2", "resource");
+        Path resourcePath = Path.of("src", "module", "_303", "GLAB", "_13", "_2", "resource");
+
 
         try (WritableByteChannel outputChannel = FileChannel.open(resourcePath.resolve(outputFile), CREATE, WRITE)) {
             for (var file : inputFiles) {
