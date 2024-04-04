@@ -8,18 +8,19 @@ public abstract class MainEntry {
         @Override
         public Integer compute(Integer[] values) {
             var numbers = List.of(values);
-            return numbers.stream().mapToInt(Integer::intValue).sum();
+            return numbers.stream().reduce(Integer::sum).orElse(0);
         }
     };
     public static Calc<Integer> subtract = values -> {
         var numbers = List.of(values);
-        return numbers.stream().mapToInt(Integer::intValue).reduce((a, b) -> a - b).orElse(0);
+        return numbers.stream().reduce((a, b) -> a - b).orElse(0);
     };
     public static Supplier<Calc<Integer>> multiply = () -> values -> {
         var numbers = List.of(values);
-        return numbers.stream().mapToInt(Integer::intValue).reduce((a, b) -> a * b).orElse(0);
+        return numbers.stream().reduce((a, b) -> a * b).orElse(0);
     };
-    public static Calc<Integer> divide = values -> {
+
+    public static Calc<Double> divide = values -> {
         try {
             return calculateDivision(values);
         } catch (Exception e) {
@@ -27,7 +28,7 @@ public abstract class MainEntry {
         }
     };
 
-    private static int calculateDivision(Integer[] values) throws Exception {
+    private static double calculateDivision(Double[] values) throws Exception {
         var numbers = List.of(values);
         if (numbers.size() < 2) {
             throw new Exception("Division requires at least two numbers.");
@@ -38,14 +39,14 @@ public abstract class MainEntry {
         if (numbers.get(1) == 0) {
             throw new Exception("Cannot divide by zero.");
         }
-        return numbers.stream().mapToInt(Integer::intValue).reduce((a, b) -> a / b).orElse(0);
+        return numbers.stream().reduce((a, b) -> a / b).orElse(0.0);
     }
 
     private static List<Integer> getNumbers(Scanner scanner) {
         var values = new ArrayList<Integer>();
         boolean isDone = false;
         do {
-            System.out.println("Enter a number or type 'done' to finish: ");
+            System.out.println("Enter a list of numbers to perform an operation. Type 'done' to finish.");
             String[] input = scanner.nextLine().split(" ");
             input = Arrays.stream(input).filter(value -> !value.isBlank()).toArray(String[]::new);
             try {
@@ -75,8 +76,7 @@ public abstract class MainEntry {
                         1. Add
                         2. Subtract
                         3. Multiply
-                        4. Divide
-                        5. Done""");
+                        4. Divide""");
                 operation = ArithmeticOperation.valueOf(scanner.nextInt());
                 if (operation == null) {
                     System.out.println("Invalid operation. Try again.");
@@ -129,6 +129,7 @@ public abstract class MainEntry {
             }
         } while (!isDone);
         scanner.close();
+        System.out.println("Goodbye!");
     }
 
     private static void runCalculator(Scanner scanner) {
@@ -149,9 +150,13 @@ public abstract class MainEntry {
                 Numbers to multiply: \{values}
                 Result: \{multiply.get().compute(values.toArray(new Integer[0]))}""");
 
-                case DIVIDE -> System.out.println(STR."""
+                case DIVIDE -> {
+                    List<Double> doubleValues = new ArrayList<>();
+                    values.stream().map(Integer::doubleValue).forEach(doubleValues::add);
+                    System.out.println(STR."""
                 Numbers to divide: \{values}
-                Result: \{divide.compute(values.toArray(new Integer[0]))}""");
+                Result: \{divide.compute(doubleValues.toArray(new Double[0]))}""");
+                }
 
                 default -> System.out.println("Invalid operation. Try again.");
             }
