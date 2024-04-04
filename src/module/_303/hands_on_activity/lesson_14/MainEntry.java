@@ -4,22 +4,22 @@ import java.util.*;
 import java.util.function.Supplier;
 
 public abstract class MainEntry {
-    public static Calc add = new Calc() {
+    public static Calc add = new Calc<Integer>() {
         @Override
-        public int compute(Integer[] values) {
+        public Integer compute(Integer[] values) {
             var numbers = List.of(values);
             return numbers.stream().mapToInt(Integer::intValue).sum();
         }
     };
-    public static Calc subtract = values -> {
+    public static Calc<Integer> subtract = values -> {
         var numbers = List.of(values);
         return numbers.stream().mapToInt(Integer::intValue).reduce((a, b) -> a - b).orElse(0);
     };
-    public static Supplier<Calc> multiply = () -> values -> {
+    public static Supplier<Calc<Integer>> multiply = () -> values -> {
         var numbers = List.of(values);
         return numbers.stream().mapToInt(Integer::intValue).reduce((a, b) -> a * b).orElse(0);
     };
-    public static Calc divide = values -> {
+    public static Calc<Integer> divide = values -> {
         try {
             return calculateDivision(values);
         } catch (Exception e) {
@@ -138,19 +138,19 @@ public abstract class MainEntry {
 
             switch (operation) {
                 case ADD -> System.out.println(STR."""
-                Number to add: \{values}
+                Numbers to add: \{values}
                 Result: \{add.compute(values.toArray(new Integer[0]))}""");
 
                 case SUBTRACT -> System.out.println(STR."""
-                Number to subtract: \{values}
+                Numbers to subtract: \{values}
                 Result: \{subtract.compute(values.toArray(new Integer[0]))}""");
 
                 case MULTIPLY -> System.out.println(STR."""
-                Number to multiply: \{values}
+                Numbers to multiply: \{values}
                 Result: \{multiply.get().compute(values.toArray(new Integer[0]))}""");
 
                 case DIVIDE -> System.out.println(STR."""
-                Number to divide: \{values}
+                Numbers to divide: \{values}
                 Result: \{divide.compute(values.toArray(new Integer[0]))}""");
 
                 default -> System.out.println("Invalid operation. Try again.");
