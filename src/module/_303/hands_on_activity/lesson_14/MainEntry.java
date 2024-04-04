@@ -43,7 +43,8 @@ public abstract class MainEntry {
 
     private static List<Integer> getNumbers(Scanner scanner) {
         var values = new ArrayList<Integer>();
-        boolean isDone = false;
+        var isDone = false;
+
         do {
             System.out.println("Enter a list of numbers to perform an operation. Type 'done' to finish.");
             var input = scanner.nextLine().split(" ");
@@ -67,8 +68,9 @@ public abstract class MainEntry {
     }
 
     private static ArithmeticOperation getOperation(Scanner scanner) {
-        boolean isDone = false;
+        var isDone = false;
         ArithmeticOperation operation = null;
+
         do {
             try {
                 System.out.println("""
@@ -96,7 +98,7 @@ public abstract class MainEntry {
         do {
             try {
                 System.out.println("Do you want to perform another operation? (yes/no)");
-                String response = scanner.nextLine().trim();
+                var response = scanner.nextLine().trim();
                 switch (response.toLowerCase()) {
                     case "yes" -> {
                         return false;
@@ -113,8 +115,9 @@ public abstract class MainEntry {
     }
 
     public static void main(String[] args) {
-        boolean isDone = false;
-        Scanner scanner = new Scanner(System.in);
+        var isDone = false;
+        var scanner = new Scanner(System.in);
+
         do {
             try {
                 runCalculator(scanner);
@@ -129,8 +132,8 @@ public abstract class MainEntry {
 
     private static void runCalculator(Scanner scanner) {
         try {
-            List<Integer> values = getNumbers(scanner);
-            ArithmeticOperation operation = getOperation(scanner);
+            var values = getNumbers(scanner);
+            var operation = getOperation(scanner);
 
             switch (operation) {
                 case ADD -> System.out.println(STR."""
