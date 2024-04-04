@@ -57,8 +57,8 @@ public abstract class MainEntry {
                     values.add(Integer.parseInt(value));
                 }
             } catch (NumberFormatException e) {
-                System.out.println("Invalid input. " + e.getMessage() + ". Try again.");
-                System.out.println("Current values: " + values);
+                System.out.println(STR."Invalid input. \{e.getMessage()}. Try again.");
+                System.out.println(STR."Current values: \{values}");
                 continue;
             }
         } while (!isDone);
