@@ -7,7 +7,8 @@ public enum MathSymbol {
     PLUS("+"),
     MINUS("-"),
     MULTIPLY("*"),
-    DIVIDE("/");
+    DIVIDE("/"),
+    MODULO("%");
 
     private static final Map<String, MathSymbol> mathSymbolMap = new HashMap<>();
 

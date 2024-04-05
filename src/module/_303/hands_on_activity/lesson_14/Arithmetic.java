@@ -36,6 +36,25 @@ public enum Arithmetic {
             };
             return divide.compute(numbers);
         }
+    }, MODULO(MathSymbol.MODULO) {
+        public Integer calculate(Integer[] numbers) {
+            Calc<Integer, Integer> modulo = values -> {
+                if (values.length < 2) {
+                    throw new RuntimeException("Modulo requires at least two numbers.");
+                }
+                if (values.length > 2) {
+                    throw new RuntimeException("Modulo requires only two numbers.");
+                }
+                if (values[1] == 0) {
+                    throw new RuntimeException("Cannot divide by zero.");
+                }
+                if (values[0] == 0) {
+                    return 0;
+                }
+                return Stream.of(values).reduce((a, b) -> a % b).orElse(0);
+            };
+            return modulo.compute(numbers);
+        }
     };
 
     private final static Map<MathSymbol, Arithmetic> arithmeticMap = new HashMap<>();
