@@ -1,6 +1,7 @@
 package module._303.hands_on_activity.lesson_14;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -41,30 +42,33 @@ public abstract class MainEntry {
         return Stream.of(values).reduce((a, b) -> a / b).orElse(0.0);
     }
 
-    private static List<Integer> getNumbers(Scanner scanner) {
-        var values = new ArrayList<Integer>();
+    private static List<Integer> getNumbers(BufferedReader reader) {
+        var numbers = new ArrayList<Integer>();
 
         do {
-            System.out.println("Enter a list of numbers to perform an operation. Type 'done' to finish.");
-            var input = scanner.nextLine().split(" ");
-            input = Stream.of(input).filter(value -> !value.isBlank()).toArray(String[]::new);
-
             try {
-                for (String value : input) {
+                System.out.println("Enter a list of numbers to perform an operation. Type 'done' to finish.");
+                var input = reader.readLine().split(" ");
+                var values = Stream.of(input).filter(value -> !value.isBlank()).toArray(String[]::new);
+
+                for (var value : values) {
                     if (value.equalsIgnoreCase("done")) {
-                        return values;
+                        return numbers;
                     }
-                    values.add(Integer.parseInt(value));
+                    numbers.add(Integer.parseInt(value));
                 }
-            } catch (NumberFormatException e) {
-                System.out.println(STR."""
-                Invalid input. \{e.getMessage()}. Try again.
-                Current values: \{values}""");
+            } catch (Exception e) {
+                System.out.println("Invalid input. Try again.");
+
+                if (!numbers.isEmpty()) {
+                    System.out.println(STR."Current list of numbers: \{numbers.toString().replaceAll("[\\[\\]]", "")}");
+                }
             }
         } while (true);
     }
 
-    private static ArithmeticOperation getOperation(Scanner scanner) {
+
+    private static ArithmeticOperation getOperation(BufferedReader reader) {
         do {
             try {
                 System.out.println("""
@@ -74,7 +78,7 @@ public abstract class MainEntry {
                         3. Multiply
                         4. Divide""");
 
-                String[] input = scanner.nextLine().split(" ");
+                String[] input = reader.readLine().split(" ");
                 int operationValue = Stream.of(input).filter(value -> !value.isBlank()).map(Integer::parseInt).findFirst().orElse(0);
                 var operation = ArithmeticOperation.valueOf(operationValue);
 
@@ -82,28 +86,23 @@ public abstract class MainEntry {
                     return operation;
                 }
                 throw new Exception("Invalid operation. Try again.");
-            } catch (NumberFormatException e) {
-                System.out.println(STR."Invalid input. \{e.getMessage()}. Try again.");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         } while (true);
     }
 
-    private static boolean isDone(Scanner scanner) {
+    private static boolean isDone(BufferedReader reader) {
         do {
             try {
                 System.out.println("Do you want to perform another operation? (yes/no)");
-                var response = scanner.nextLine().trim();
-                switch (response.toLowerCase()) {
-                    case "yes" -> {
-                        return false;
-                    }
-                    case "no" -> {
-                        return true;
-                    }
+                var response = reader.readLine().trim();
+
+                return switch (response.toLowerCase()) {
+                    case "yes" -> false;
+                    case "no" -> true;
                     default -> throw new Exception("Invalid response. Try again.");
-                }
+                };
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
@@ -111,43 +110,35 @@ public abstract class MainEntry {
     }
 
     public static void main(String[] args) {
-        try (var scanner = new Scanner(System.in)) {
-            System.out.println("Welcome to the calculator!");
+        System.out.println("Welcome to the calculator!");
+
+        try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
             do {
-                runCalculator(scanner);
-            } while (!isDone(scanner));
-            System.out.println("Goodbye!");
+                runCalculator(reader);
+            } while (!isDone(reader));
         } catch (Exception e) {
             System.out.println(STR."An error occurred. \{e.getMessage()}");
         }
+        System.out.println("Goodbye!");
     }
 
-    private static void runCalculator(Scanner scanner) {
+    private static void runCalculator(BufferedReader reader) {
         try {
-            var values = getNumbers(scanner);
-            var operation = getOperation(scanner);
+            var values = getNumbers(reader);
+            var operation = getOperation(reader);
+            String numbers = values.toString().replaceAll("[\\[\\]]", "");
 
             switch (operation) {
-                case ADD -> System.out.println(STR."""
-                Numbers to add: \{values}
-                Result: \{add.compute(values.toArray(new Integer[0]))}""");
-
-                case SUBTRACT -> System.out.println(STR."""
-                Numbers to subtract: \{values}
-                Result: \{subtract.compute(values.toArray(new Integer[0]))}""");
-
-                case MULTIPLY -> System.out.println(STR."""
-                Numbers to multiply: \{values}
-                Result: \{multiply.get().compute(values.toArray(new Integer[0]))}""");
-
+                case ADD ->
+                        System.out.println(STR."\{numbers.replaceAll(", ", " + ")} = \{add.compute(values.toArray(new Integer[0]))}");
+                case SUBTRACT ->
+                        System.out.println(STR."\{numbers.replaceAll(", ", " - ")} = \{subtract.compute(values.toArray(new Integer[0]))}");
+                case MULTIPLY ->
+                        System.out.println(STR."\{numbers.replaceAll(", ", " * ")} = \{multiply.get().compute(values.toArray(new Integer[0]))}");
                 case DIVIDE -> {
-                    List<Double> doubleValues = new ArrayList<>();
-                    values.forEach(value -> doubleValues.add(value.doubleValue()));
-                    System.out.println(STR."""
-                Numbers to divide: \{values}
-                Result: \{divide.compute(doubleValues.toArray(new Double[0]))}""");
+                    Double[] doubleValues = values.stream().map(Integer::doubleValue).toArray(Double[]::new);
+                    System.out.println(STR."\{numbers.replaceAll(", ", " / ")} = \{divide.compute(doubleValues)}");
                 }
-
                 default -> System.out.println("Invalid operation. Try again.");
             }
         } catch (Exception e) {
@@ -174,4 +165,3 @@ public abstract class MainEntry {
         }
     }
 }
-
