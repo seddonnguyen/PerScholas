@@ -1,9 +1,5 @@
 package module._303.hands_on_activity.lesson_14;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
-
 public enum ArithmeticOperation {
     ADD(Arithmetic.add, "+"),
     SUBTRACT(Arithmetic.subtract, "-"),
