@@ -43,7 +43,6 @@ public abstract class MainEntry {
 
     private static List<Integer> getNumbers(Scanner scanner) {
         var values = new ArrayList<Integer>();
-        var isDone = false;
 
         do {
             System.out.println("Enter a list of numbers to perform an operation. Type 'done' to finish.");
@@ -53,8 +52,7 @@ public abstract class MainEntry {
             try {
                 for (String value : input) {
                     if (value.equalsIgnoreCase("done")) {
-                        isDone = true;
-                        break;
+                        return values;
                     }
                     values.add(Integer.parseInt(value));
                 }
@@ -63,14 +61,10 @@ public abstract class MainEntry {
                 Invalid input. \{e.getMessage()}. Try again.
                 Current values: \{values}""");
             }
-        } while (!isDone);
-        return values;
+        } while (true);
     }
 
     private static ArithmeticOperation getOperation(Scanner scanner) {
-        var isDone = false;
-        ArithmeticOperation operation = null;
-
         do {
             try {
                 System.out.println("""
@@ -79,19 +73,21 @@ public abstract class MainEntry {
                         2. Subtract
                         3. Multiply
                         4. Divide""");
-                operation = ArithmeticOperation.valueOf(scanner.nextInt());
-                if (operation == null) {
-                    System.out.println("Invalid operation. Try again.");
-                } else {
-                    isDone = true;
+
+                String[] input = scanner.nextLine().split(" ");
+                int operationValue = Stream.of(input).filter(value -> !value.isBlank()).map(Integer::parseInt).findFirst().orElse(0);
+                var operation = ArithmeticOperation.valueOf(operationValue);
+
+                if (operation != null) {
+                    return operation;
                 }
-                scanner.nextLine();
+                throw new Exception("Invalid operation. Try again.");
+            } catch (NumberFormatException e) {
+                System.out.println(STR."Invalid input. \{e.getMessage()}. Try again.");
             } catch (Exception e) {
-                System.out.println("Invalid operation. Try again.");
-                scanner.nextLine();
+                System.out.println(e.getMessage());
             }
-        } while (!isDone);
-        return operation;
+        } while (true);
     }
 
     private static boolean isDone(Scanner scanner) {
@@ -115,19 +111,15 @@ public abstract class MainEntry {
     }
 
     public static void main(String[] args) {
-        var isDone = false;
-        var scanner = new Scanner(System.in);
-
-        do {
-            try {
+        try (var scanner = new Scanner(System.in)) {
+            System.out.println("Welcome to the calculator!");
+            do {
                 runCalculator(scanner);
-                isDone = isDone(scanner);
-            } catch (Exception e) {
-                System.out.println(STR."An error occurred. \{e.getMessage()}");
-            }
-        } while (!isDone);
-        scanner.close();
-        System.out.println("Goodbye!");
+            } while (!isDone(scanner));
+            System.out.println("Goodbye!");
+        } catch (Exception e) {
+            System.out.println(STR."An error occurred. \{e.getMessage()}");
+        }
     }
 
     private static void runCalculator(Scanner scanner) {
