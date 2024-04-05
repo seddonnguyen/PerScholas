@@ -47,7 +47,11 @@ public abstract class MainEntry {
 
         do {
             try {
+                if (!numbers.isEmpty()) {
+                    System.out.println(STR."Current list of numbers: \{numbers.toString().replaceAll("[\\[\\]]", "")}");
+                }
                 System.out.println("Enter a list of numbers to perform an operation. Type 'done' to finish.");
+
                 var input = reader.readLine().split(" ");
                 var values = Stream.of(input).filter(value -> !value.isBlank()).toArray(String[]::new);
 
@@ -58,11 +62,7 @@ public abstract class MainEntry {
                     numbers.add(Integer.parseInt(value));
                 }
             } catch (Exception e) {
-                System.out.println("Invalid input. Try again.");
-
-                if (!numbers.isEmpty()) {
-                    System.out.println(STR."Current list of numbers: \{numbers.toString().replaceAll("[\\[\\]]", "")}");
-                }
+                System.out.println("Invalid number. Try again.");
             }
         } while (true);
     }
@@ -86,6 +86,8 @@ public abstract class MainEntry {
                     return operation;
                 }
                 throw new Exception("Invalid operation. Try again.");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid operation. Try again.");
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
