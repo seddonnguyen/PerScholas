@@ -2,7 +2,6 @@ package module._303.hands_on_activity.lesson_14;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 import static module._303.hands_on_activity.lesson_14.Prompt.*;
 
@@ -10,8 +9,7 @@ public abstract class MainEntry {
 
     public static void main(String[] args) {
         System.out.println("Welcome to the calculator!");
-
-        try (var reader = new BufferedReader(new InputStreamReader(System.in))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             do {
                 runCalculator(reader);
             } while (continueOperation(reader));
@@ -27,16 +25,11 @@ public abstract class MainEntry {
             if (numbers.length == 0) {
                 return;
             }
+
             var arithmeticOperation = getOperation(reader);
-            var results = arithmeticOperation.getOperation().compute(numbers);
-            System.out.println(formatEquation(numbers, arithmeticOperation.getSymbol(), results));
+            System.out.println(arithmeticOperation.toString(numbers, arithmeticOperation.calculate(numbers)));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private static String formatEquation(Integer[] numbers, String symbol, Number results) {
-        var equation = Arrays.toString(numbers).replaceAll("[\\[\\]]", "").replaceAll(", ", STR." \{symbol} ");
-        return STR."\{equation} = \{results}";
     }
 }

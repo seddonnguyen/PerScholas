@@ -2,23 +2,17 @@ package module._303.hands_on_activity.lesson_14;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public interface Prompt {
     static Integer[] getIntegers(BufferedReader reader) {
         var numbers = new ArrayList<Integer>();
-
         do {
             try {
-                if (!numbers.isEmpty()) {
-                    System.out.println(STR."Current list of numbers: \{numbers.toString().replaceAll("[\\[\\]]", "")}");
-                }
-                System.out.println("Enter a list of integer to perform an operation. Type 'done' to finish.");
+                var inputValues = promptForInput(reader, buildGetNumberMessage(numbers));
 
-                var input = reader.readLine().split(" ");
-                var values = Stream.of(input).filter(value -> !value.isBlank()).toArray(String[]::new);
-
-                for (var value : values) {
+                for (var value : inputValues) {
                     if (value.equalsIgnoreCase("done")) {
                         return numbers.toArray(new Integer[0]);
                     }
@@ -30,19 +24,12 @@ public interface Prompt {
         } while (true);
     }
 
-    static ArithmeticOperation getOperation(BufferedReader reader) {
-        var operations = ArithmeticOperation.values();
+    static Arithmetic getOperation(BufferedReader reader) {
+        String message = buildGetOperationMessage();
         do {
             try {
-                System.out.println("Choose a number to perform an operation:");
-                for (var operation : operations) {
-                    var name = operation.name().charAt(0) + operation.name().substring(1).toLowerCase();
-                    System.out.println(STR."\{operation.getIndex()}. \{name}");
-                }
-
-                String[] input = reader.readLine().split(" ");
-                int operationIndex = Stream.of(input).filter(value -> !value.isBlank()).map(Integer::parseInt).findFirst().orElse(0);
-                var operation = ArithmeticOperation.valueOf(operationIndex);
+                var selection = Stream.of(promptForInput(reader, message)).map(Integer::parseInt).findFirst().orElse(0);
+                var operation = Arithmetic.valueOf(selection);
 
                 if (operation != null) {
                     return operation;
@@ -54,12 +41,11 @@ public interface Prompt {
         } while (true);
     }
 
-     static boolean continueOperation(BufferedReader reader) {
+    static boolean continueOperation(BufferedReader reader) {
+        String message = "Do you want to perform another operation? (yes/no)";
         do {
             try {
-                System.out.println("Do you want to perform another operation? (yes/no)");
-                var response = reader.readLine().trim();
-
+                String response = Stream.of(promptForInput(reader, message)).findFirst().orElse("");
                 return switch (response.toLowerCase()) {
                     case "yes" -> true;
                     case "no" -> false;
@@ -69,5 +55,38 @@ public interface Prompt {
                 System.out.println(e.getMessage());
             }
         } while (true);
+    }
+
+    private static String[] promptForInput(BufferedReader reader, String message) {
+        do {
+            try {
+                System.out.println(message);
+                var input = reader.readLine().split(" ");
+                return Stream.of(input).filter(value -> !value.isBlank()).toArray(String[]::new);
+            } catch (Exception e) {
+                System.out.println("Invalid input. Try again.");
+            }
+        } while (true);
+    }
+
+    private static String buildGetOperationMessage() {
+        var messageBuilder = new StringBuilder();
+
+        messageBuilder.append("Choose a number to perform an operation:\n");
+        List.of(Arithmetic.values()).forEach(operation -> messageBuilder.append(STR."\{operation.getIndex()}. \{operation.toString()}\n"));
+        return messageBuilder.deleteCharAt(messageBuilder.lastIndexOf("\n")).toString();
+    }
+
+    private static String buildGetNumberMessage(List<Integer> numbers) {
+        var currentList = "Current list of integers: ";
+        var promptUserInput = "Enter a list of integer to perform an operation. Type 'done' to finish.";
+        var messageBuilder = new StringBuilder();
+
+        if (!numbers.isEmpty()) {
+            var list = numbers.toString().replaceAll("[\\[\\]]", "");
+            messageBuilder.append(currentList).append(list).append("\n");
+        }
+        messageBuilder.append(promptUserInput);
+        return messageBuilder.toString();
     }
 }
