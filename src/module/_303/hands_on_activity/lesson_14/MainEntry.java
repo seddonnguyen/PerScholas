@@ -27,9 +27,9 @@ public abstract class MainEntry {
             if (numbers.length == 0) {
                 return;
             }
-            var operation = getOperation(reader);
-            var results = operation.getOperation().compute(numbers);
-            System.out.println(formatEquation(numbers, operation.getSymbol(), results));
+            var arithmeticOperation = getOperation(reader);
+            var results = arithmeticOperation.getOperation().compute(numbers);
+            System.out.println(formatEquation(numbers, arithmeticOperation.getSymbol(), results));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
