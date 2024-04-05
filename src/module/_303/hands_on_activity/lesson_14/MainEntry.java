@@ -85,11 +85,9 @@ public abstract class MainEntry {
                 if (operation != null) {
                     return operation;
                 }
-                throw new Exception("Invalid operation. Try again.");
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid operation. Try again.");
+                throw new Exception();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("Invalid operation. Try again.");
             }
         } while (true);
     }
