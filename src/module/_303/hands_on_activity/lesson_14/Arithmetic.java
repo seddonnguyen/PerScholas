@@ -14,6 +14,9 @@ public enum Arithmetic {
 
     private static final Map<String, Arithmetic> SYMBOL_MAP = Stream.of(values())
             .collect(Collectors.toMap(Arithmetic::getSymbol, Function.identity()));
+    private static final Map<Integer, Arithmetic> INDEX_MAP = Stream.of(values())
+            .collect(Collectors.toMap(Arithmetic::getIndex, Function.identity()));
+
     private final String symbol;
     private final Calc operation;
 
@@ -23,7 +26,7 @@ public enum Arithmetic {
     }
 
     public static Arithmetic valueOf(int index) {
-        return values()[index - 1];
+        return INDEX_MAP.get(index);
     }
 
     public static Arithmetic fromSymbol(String symbol) {
