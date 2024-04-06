@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public interface Prompt {
-    static Integer[] getIntegers(BufferedReader reader) {
+    static List<Integer> getIntegers(BufferedReader reader) {
         var numbers = new ArrayList<Integer>();
         do {
             try {
@@ -14,7 +14,7 @@ public interface Prompt {
 
                 for (var value : inputValues) {
                     if (value.equalsIgnoreCase("done")) {
-                        return numbers.toArray(new Integer[0]);
+                        return numbers;
                     }
                     numbers.add(Integer.parseInt(value));
                 }
