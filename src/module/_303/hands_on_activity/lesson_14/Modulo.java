@@ -32,7 +32,7 @@ public class Modulo implements Calc {
             throw new IllegalArgumentException("Modulo requires exactly two operands");
         }
 
-        if (values.stream().skip(1).anyMatch(v -> v.doubleValue() == 0)) {
+        if (values.stream().skip(1).anyMatch(v -> v.intValue() == 0)) {
             throw new ArithmeticException("Modulo by zero");
         }
 
