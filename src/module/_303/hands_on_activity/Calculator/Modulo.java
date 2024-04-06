@@ -1,4 +1,4 @@
-package module._303.hands_on_activity.lesson_14;
+package module._303.hands_on_activity.Calculator;
 
 import java.util.Objects;
 

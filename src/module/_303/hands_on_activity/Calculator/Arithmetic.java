@@ -1,4 +1,4 @@
-package module._303.hands_on_activity.lesson_14;
+package module._303.hands_on_activity.Calculator;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -11,7 +11,7 @@ public enum Arithmetic {
     MULTIPLY(Multiplication.SYMBOL, Multiplication.operation),
     DIVIDE(Division.SYMBOL, Division.operation),
     MODULO(Modulo.SYMBOL, Modulo.operation);
-    
+
     private static final Map<Integer, Arithmetic> INDEX_MAP = Stream.of(values())
                                                                     .collect(Collectors.toMap(Arithmetic::getIndex, Function.identity()));
 
