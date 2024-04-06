@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum Arithmetic {
-    ADD("+", Addition.getInstance()),
-    SUBTRACT("-", Substraction.getInstance()),
-    MULTIPLY("*", Multiplication.getInstance()),
-    DIVIDE("/", Division.getInstance()),
-    MODULO("%", Modulo.getInstance());
+    ADD(Addition.getInstance()),
+    SUBTRACT(Substraction.getInstance()),
+    MULTIPLY(Multiplication.getInstance()),
+    DIVIDE(Division.getInstance()),
+    MODULO(Modulo.getInstance());
 
     private static final Map<String, Arithmetic> SYMBOL_MAP = Stream.of(values())
             .collect(Collectors.toMap(Arithmetic::getSymbol, Function.identity()));
@@ -20,9 +20,9 @@ public enum Arithmetic {
     private final String symbol;
     private final Calc operation;
 
-    Arithmetic(String symbol, Calc operation) {
+    Arithmetic(Calc operation) {
         this.operation = operation;
-        this.symbol = symbol;
+        this.symbol = operation.toString();
     }
 
     public static Arithmetic valueOf(int index) {
