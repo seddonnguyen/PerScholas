@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 public abstract class Main {
-
     public static void main(String[] args) {
         System.out.println("Welcome to the calculator!");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -20,9 +19,7 @@ public abstract class Main {
     private static void runCalculator(BufferedReader reader) {
         try {
             var numbers = Prompt.getIntegers(reader);
-            if (numbers.isEmpty()) {
-                return;
-            }
+            if (numbers.isEmpty()) { return; }
 
             Arithmetic arithmeticOperation = Prompt.getOperation(reader);
             System.out.println(Equation.toString(numbers, arithmeticOperation));

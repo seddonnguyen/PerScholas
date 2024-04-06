@@ -13,9 +13,8 @@ public interface Prompt {
                 var inputValues = promptForInput(reader, buildGetNumberMessage(numbers));
 
                 for (var value : inputValues) {
-                    if (value.equalsIgnoreCase("done")) {
-                        return numbers;
-                    }
+                    if (value.equalsIgnoreCase("done")) { return numbers; }
+
                     numbers.add(Integer.parseInt(value));
                 }
             } catch (Exception e) {
@@ -31,9 +30,7 @@ public interface Prompt {
                 var selection = Stream.of(promptForInput(reader, message)).map(Integer::parseInt).findFirst().orElse(0);
                 var operation = Arithmetic.valueOf(selection);
 
-                if (operation != null) {
-                    return operation;
-                }
+                if (operation != null) { return operation; }
                 throw new Exception();
             } catch (Exception e) {
                 System.out.println("Invalid operation. Try again.");
@@ -62,6 +59,7 @@ public interface Prompt {
             try {
                 System.out.println(message);
                 var input = reader.readLine().split(" ");
+
                 return Stream.of(input).filter(value -> !value.isBlank()).toArray(String[]::new);
             } catch (Exception e) {
                 System.out.println("Invalid input. Try again.");
@@ -74,7 +72,7 @@ public interface Prompt {
 
         messageBuilder.append("Choose a number to perform an operation:\n");
         List.of(Arithmetic.values()).forEach(operation -> messageBuilder.append(STR."\{operation.getIndex()}. \{operation.toString()}\n"));
-        return messageBuilder.deleteCharAt(messageBuilder.lastIndexOf("\n")).toString();
+        return messageBuilder.deleteCharAt(messageBuilder.length() - 1).toString();
     }
 
     private static String buildGetNumberMessage(List<Integer> numbers) {
@@ -84,6 +82,7 @@ public interface Prompt {
 
         if (!numbers.isEmpty()) {
             var list = numbers.toString().replaceAll("[\\[\\]]", "");
+
             messageBuilder.append(currentList).append(list).append("\n");
         }
         messageBuilder.append(promptUserInput);

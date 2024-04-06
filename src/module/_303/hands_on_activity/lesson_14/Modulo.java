@@ -1,59 +1,34 @@
 package module._303.hands_on_activity.lesson_14;
 
-import java.util.List;
 import java.util.Objects;
 
-public class Modulo implements Calc {
-    private static final String SYMBOL = "%";
-    private static final Modulo INSTANCE = new Modulo();
+public interface Modulo {
+    String SYMBOL = "%";
 
-    private Modulo() {
-    }
-
-    public static Modulo getInstance() {
-        return INSTANCE;
-    }
-
-    @Override
-    public <T extends Number> Number calculate(List<T> values) {
-        if (values == null) {
+    Calculate operation = numbers -> {
+        if (numbers == null) {
             throw new NullPointerException("Modulo requires non-null operands");
         }
 
-        if (values.stream().anyMatch(Objects::isNull)) {
+        if (numbers.stream().anyMatch(Objects::isNull)) {
             throw new NullPointerException("Modulo requires non-null operands");
         }
 
-        if (values.size() < 2) {
+        if (numbers.size() < 2) {
             throw new IllegalArgumentException("Modulo requires at least two operands");
         }
 
-        if (values.size() > 2) {
+        if (numbers.size() > 2) {
             throw new IllegalArgumentException("Modulo requires exactly two operands");
         }
 
-        if (values.stream().skip(1).anyMatch(v -> v.intValue() == 0)) {
-            throw new ArithmeticException("Modulo by zero");
+        if (numbers.stream().anyMatch(number -> number instanceof Double)) {
+            throw new IllegalArgumentException("Modulo requires integer operands");
         }
 
-        return values.stream()
-                .mapToInt(Number::intValue)
-                .reduce((a, b) -> a % b)
-                .orElse(0);
-    }
-
-    @Override
-    public String toString() {
-        return SYMBOL;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Modulo;
-    }
-
-    @Override
-    public int hashCode() {
-        return SYMBOL.hashCode();
-    }
+        if (numbers.stream().skip(1).anyMatch(v -> v.intValue() == 0)) {
+            throw new ArithmeticException("Modulo by zero");
+        }
+        return numbers.stream().mapToInt(Number::intValue).reduce((a, b) -> a % b).orElse(0);
+    };
 }

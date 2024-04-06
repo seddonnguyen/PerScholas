@@ -3,53 +3,36 @@ package module._303.hands_on_activity.lesson_14;
 import java.util.List;
 import java.util.Objects;
 
-public class Division implements Calc {
-    private static final String SYMBOL = "/";
-    private static final Division INSTANCE = new Division();
+public interface Division {
+    String SYMBOL = "/";
 
-    private Division() {
-    }
-
-    public static Division getInstance() {
-        return INSTANCE;
-    }
-
-    @Override
-    public <T extends Number> Number calculate(List<T> values) {
-        if (values == null) {
+    Calculate operation = numbers -> {
+        if (numbers == null) {
             throw new NullPointerException("Division requires non-null operands");
         }
 
-        if (values.stream().anyMatch(Objects::isNull)) {
+        if (numbers.stream().anyMatch(Objects::isNull)) {
             throw new NullPointerException("Division requires non-null operands");
         }
 
-        if (values.size() < 2) {
+        if (numbers.size() < 2) {
             throw new IllegalArgumentException("Division requires at least two operands");
         }
 
-        if (values.stream().skip(1).anyMatch(v -> v.doubleValue() == 0)) {
+        if (numbers.size() > 2) {
+            throw new IllegalArgumentException("Division requires only two operands");
+        }
+
+        if (numbers.stream().skip(1).anyMatch(v -> v.intValue() == 0)) {
             throw new ArithmeticException("Division by zero");
         }
 
-        return values.stream()
-                .mapToDouble(Number::doubleValue)
-                .reduce((a, b) -> a / b)
-                .orElse(0);
-    }
-
-    @Override
-    public String toString() {
-        return SYMBOL;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof Division;
-    }
-
-    @Override
-    public int hashCode() {
-        return SYMBOL.hashCode();
-    }
-}
+        List<Integer> intNumbers = numbers.stream().map(Number::intValue).toList();
+        for (int i = 0; i < intNumbers.size() - 1; i++) {
+            if (i + 1 < intNumbers.size() && intNumbers.get(i) % intNumbers.get(i + 1) != 0) {
+                return numbers.stream().mapToDouble(Number::doubleValue).reduce((a, b) -> a / b).orElse(0);
+            }
+        }
+        return intNumbers.stream().reduce((a, b) -> a / b).orElse(0);
+    };
+};
