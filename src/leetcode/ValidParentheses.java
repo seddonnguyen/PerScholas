@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Map;
 
 // https://leetcode.com/problems/valid-parentheses
-public class Valid_Parentheses {
+public class ValidParentheses {
     public static boolean isValid(String s) {
         if (s == null || s.isBlank()) { return true; }
 
