@@ -1,4 +1,4 @@
-package LeetCode;
+package leetcode;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -6,9 +6,7 @@ import java.util.Map;
 // https://leetcode.com/problems/valid-parentheses
 public class Valid_Parentheses {
     public static boolean isValid(String s) {
-        if (s == null || s.isBlank()) {
-            return true;
-        }
+        if (s == null || s.isBlank()) { return true; }
 
         var stack = new LinkedList<Character>();
         var map = Map.of(')', '(', ']', '[', '}', '{');
@@ -19,9 +17,7 @@ public class Valid_Parentheses {
                 continue;
             }
 
-            if (stack.isEmpty() || stack.pop() != map.get(current)) {
-                return false;
-            }
+            if (stack.isEmpty() || stack.pop() != map.get(current)) { return false; }
         }
         return stack.isEmpty();
     }
